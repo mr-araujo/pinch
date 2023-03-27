@@ -9,7 +9,8 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var isAnimating = false
-    @State private var imageScale = CGFloat(1)
+    @State private var imgScale = CGFloat(1)
+    @State private var imgOffSet = CGSize(width: 0, height: 0)
 
     var body: some View {
         NavigationStack {
@@ -21,18 +22,30 @@ struct ContentView: View {
                     .padding()
                     .shadow(color: .black.opacity(0.2), radius: 12, x: 2, y: 2)
                     .opacity(isAnimating ? 1 : 0)
-                    .scaleEffect(imageScale)
+                    .scaleEffect(imgScale)
+                    .offset(x: imgOffSet.width, y: imgOffSet.height)
                     .onTapGesture(count: 2) {
-                        if imageScale == 1 {
+                        if imgScale == 1 {
                             withAnimation(.spring()) {
-                                imageScale = 5
+                                imgScale = 5
                             }
                         } else {
-                            withAnimation(.spring()) {
-                                imageScale = 1
-                            }
+                            resetImgState()
                         }
                     }
+                    .gesture(
+                        DragGesture()
+                            .onChanged{ value in
+                                withAnimation(.linear(duration: 1)) {
+                                    imgOffSet = value.translation
+                                }
+                            }
+                            .onEnded { _ in
+                                if imgScale <= 1 {
+                                    resetImgState()
+                                }
+                            }
+                    )
             }
             .navigationTitle("Pinch & Zoom")
             .navigationBarTitleDisplayMode(.inline)
@@ -41,6 +54,13 @@ struct ContentView: View {
                     isAnimating = true
                 }
             }
+        }
+    }
+    
+    private func resetImgState() {
+        return withAnimation(.spring()) {
+            imgScale = 1
+            imgOffSet = .zero
         }
     }
 }
