@@ -61,6 +61,50 @@ struct ContentView: View {
                     .padding(.top, 30)
                     .padding(.horizontal)
             }
+            .overlay(alignment: .bottom) {
+                Group {
+                    HStack {
+                        Button {
+                            withAnimation(.spring()) {
+                                if imgScale > 1 {
+                                    imgScale -= 1
+                                }
+                                
+                                if imgScale <= 1 {
+                                    resetImgState()
+                                }
+                            }
+                        } label: {
+                            ControlImageView(icon: "minus.magnifyingglass")
+                        }
+                        
+                        Button {
+                            resetImgState()
+                        } label: {
+                            ControlImageView(icon: "arrow.up.left.and.down.right.magnifyingglass")
+                        }
+                        
+                        Button {
+                            withAnimation(.spring()) {
+                                if imgScale < 5 {
+                                    imgScale += 1
+                                }
+                                
+                                if imgScale > 5 {
+                                    imgScale = 5
+                                }
+                            }
+                        } label: {
+                            ControlImageView(icon: "plus.magnifyingglass")
+                        }
+                    }
+                    .padding(.vertical, 12)
+                    .padding(.horizontal, 20)
+                    .background(.ultraThinMaterial)
+                    .cornerRadius(12)
+                    .opacity(isAnimating ? 1 : 0)
+                }.padding(.bottom, 30)
+            }
         }
     }
     
