@@ -48,6 +48,21 @@ struct ContentView: View {
                                 }
                             }
                     )
+                    .gesture(
+                        MagnificationGesture()
+                            .onChanged { value in
+                                withAnimation(.linear(duration: 1)) {
+                                    if imgScale >= 1 && imgScale <= 5 {
+                                        imgScale = value
+                                    } else if imgScale > 5 {
+                                        imgScale = 1
+                                    }
+                                }
+                            }
+                            .onEnded { _ in
+                                resetImgState()
+                            }
+                    )
             }
             .navigationTitle("Pinch & Zoom")
             .navigationBarTitleDisplayMode(.inline)
