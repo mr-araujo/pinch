@@ -11,6 +11,8 @@ struct ContentView: View {
     @State private var isAnimating = false
     @State private var imgScale = CGFloat(1)
     @State private var imgOffSet = CGSize(width: 0, height: 0)
+    @State private var isDrawerOpen = false
+    @State private var drawerDidOpen = false
 
     var body: some View {
         NavigationStack {
@@ -75,6 +77,37 @@ struct ContentView: View {
                 InfoPanelView(scale: imgScale, offset: imgOffSet)
                     .padding(.top, 30)
                     .padding(.horizontal)
+            }
+            .overlay(alignment: .topTrailing) {
+                HStack {
+                    Image(systemName: drawerDidOpen ? "chevron.compact.right" : "chevron.compact.left")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(height: 40)
+                        .padding(8)
+                        .foregroundStyle(.secondary)
+                        .onTapGesture {
+                            withAnimation(.easeOut(duration: 0.5)) {
+                                isDrawerOpen.toggle()
+                            }
+
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                                withAnimation(.easeOut) {
+                                    drawerDidOpen.toggle()
+                                }
+                            }
+                        }
+
+                    Spacer()
+                }
+                .padding(.vertical, 16)
+                .padding(.horizontal, 8)
+                .background(.ultraThinMaterial)
+                .cornerRadius(12)
+                .opacity(isAnimating ? 1 : 0)
+                .frame(width: 260)
+                .padding(.top, UIScreen.main.bounds.height / 12)
+                .offset(x: isDrawerOpen ? 20 : 215)
             }
             .overlay(alignment: .bottom) {
                 Group {
